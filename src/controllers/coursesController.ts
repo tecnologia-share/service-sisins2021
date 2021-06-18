@@ -217,7 +217,6 @@ class CoursesController {
           time: course.horario,
           professor: course.professor,
           hasExam: course.provas.length > 0,
-          numberOfQuestions: course.provas.length,
           selectionProcessId: course.processo_seletivo_id,
           created_at: course.created_at,
         };
