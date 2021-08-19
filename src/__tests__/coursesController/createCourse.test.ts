@@ -1,61 +1,17 @@
 import request from 'supertest';
-import app from '../app';
+import app from '../../app';
 import { Connection, createConnection } from 'typeorm';
-import { UsuarioShare } from '../models/UsuarioShare';
-import { UserRoles } from '../typings/UserRoles';
+import {
+  createAdmin,
+  createNonAdmin,
+  genTokenAdmin,
+  genTokenNonAdmin,
+} from '../../utils/tests';
 
 let adminToken: string;
 let nonAdminToken: string;
 let selectionProcessId: string;
 let connection: Connection;
-
-const createUsers = async (connection: Connection) => {
-  const usersRepository = connection.getRepository(UsuarioShare);
-  const nonAdminUser = usersRepository.create({
-    email: 'non_admin@example.com',
-    senha: '$2b$10$c9v0imXbhfVuBgLfwaYSLubxb8.gpvr4MfX1ltmEDwIdh.x3ksj.y',
-    nome: 'Non Admin',
-    role: 'Non Admin',
-    cpf: '12345678912',
-    cidade: 'Capela do Alto',
-    estado: 'São Paulo',
-    pais: 'Brasil',
-    nascimento: new Date(),
-    telefone: '15997965485',
-  });
-  await usersRepository.save(nonAdminUser);
-  const adminUser = usersRepository.create({
-    email: 'admin@example.com',
-    senha: '$2b$10$c9v0imXbhfVuBgLfwaYSLubxb8.gpvr4MfX1ltmEDwIdh.x3ksj.y',
-    nome: 'Admin',
-    role: UserRoles.admin,
-    cpf: '12345678912',
-    cidade: 'Capela do Alto',
-    estado: 'São Paulo',
-    pais: 'Brasil',
-    nascimento: new Date(),
-    telefone: '15997965485',
-  });
-  await usersRepository.save(adminUser);
-};
-
-const getToken = async () => {
-  const responseNonAdmin = await request(app)
-    .post('/api/authenticate-share')
-    .send({
-      email: 'non_admin@example.com',
-      password: 'correct_password',
-    });
-  const responseAdmin = await request(app)
-    .post('/api/authenticate-share')
-    .send({
-      email: 'admin@example.com',
-      password: 'correct_password',
-    });
-
-  nonAdminToken = responseNonAdmin.body.token;
-  adminToken = responseAdmin.body.token;
-};
 
 const createSelectionProcess = async () => {
   const futureDate = new Date();
@@ -85,8 +41,10 @@ describe('Create Selection Process tests', () => {
     await connection.dropDatabase();
     await connection.runMigrations();
 
-    await createUsers(connection);
-    await getToken();
+    await createAdmin(connection);
+    await createNonAdmin(connection);
+    adminToken = await genTokenAdmin();
+    nonAdminToken = await genTokenNonAdmin();
     await createSelectionProcess();
   });
 

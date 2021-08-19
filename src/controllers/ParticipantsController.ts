@@ -143,7 +143,12 @@ class ParticipantsController {
 
     await participantsRepository.save(participant);
 
-    await SendMailService.execute(email, 'Cadastro', variables, npsPath);
+    await SendMailService.execute({
+      to: email,
+      subject: 'Cadastro',
+      variables,
+      path: npsPath,
+    });
     // END sending email
 
     return response

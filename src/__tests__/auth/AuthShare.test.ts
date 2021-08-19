@@ -1,36 +1,20 @@
 import request from 'supertest';
-import app from '../app';
+import app from '../../app';
 import { Connection, createConnection } from 'typeorm';
-import { Participante } from '../models/Participante';
+import { createAdmin } from '../../utils/tests';
 
-const populateDatabase = async (connection: Connection) => {
-  const participanteRepository = connection.getRepository(Participante);
-  const participante = participanteRepository.create({
-    email: 'this_email_exists@example.com',
-    senha: '$2b$10$c9v0imXbhfVuBgLfwaYSLubxb8.gpvr4MfX1ltmEDwIdh.x3ksj.y',
-    cidade: 'Test',
-    estado: 'Test',
-    cpf: '12345678912',
-    nascimento: new Date(1999, 2, 27),
-    nome: 'Test',
-    pais: 'Test',
-    telefone: '1234',
-  });
-  await participanteRepository.save(participante);
-};
-
-describe('Authentication tests', () => {
+describe('Authentication User Share tests', () => {
   beforeAll(async () => {
     const connection = await createConnection();
     await connection.dropDatabase();
     await connection.runMigrations();
 
-    await populateDatabase(connection);
+    await createAdmin(connection);
   });
 
   it('Should return a token if the email and password sent are correct', async () => {
-    const response = await request(app).post('/api/authenticate').send({
-      email: 'this_email_exists@example.com',
+    const response = await request(app).post('/api/authenticate-share').send({
+      email: 'admin@example.com',
       password: 'correct_password',
     });
 
@@ -39,7 +23,7 @@ describe('Authentication tests', () => {
   });
 
   it('Should return 401 UNAUTHORIZED if the email does not exist', async () => {
-    const response = await request(app).post('/api/authenticate').send({
+    const response = await request(app).post('/api/authenticate-share').send({
       email: 'user@example.com',
       password: 'password',
     });
@@ -48,7 +32,7 @@ describe('Authentication tests', () => {
   });
 
   it('Should return 401 UNAUTHORIZED if the email exists, but password is incorrect', async () => {
-    const response = await request(app).post('/api/authenticate').send({
+    const response = await request(app).post('/api/authenticate-share').send({
       email: 'this_email_exists@example.com',
       password: 'incorrect_password',
     });
@@ -58,12 +42,12 @@ describe('Authentication tests', () => {
 
   it('Should return 400 BAD REQUEST if no email or password is given', async () => {
     const responseWithoutEmail = await request(app)
-      .post('/api/authenticate')
+      .post('/api/authenticate-share')
       .send({
         password: 'password',
       });
     const responseWithoutPassword = await request(app)
-      .post('/api/authenticate')
+      .post('/api/authenticate-share')
       .send({
         email: 'user@example.com',
       });

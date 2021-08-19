@@ -1,8 +1,12 @@
 import request from 'supertest';
-import app from '../app';
+import app from '../../app';
 import { Connection, createConnection } from 'typeorm';
-import { UsuarioShare } from '../models/UsuarioShare';
-import { UserRoles } from '../typings/UserRoles';
+import {
+  createAdmin,
+  createNonAdmin,
+  genTokenAdmin,
+  genTokenNonAdmin,
+} from '../../utils/tests';
 
 let adminToken: string;
 let nonAdminToken: string;
@@ -12,54 +16,6 @@ futureDate.setFullYear(futureDate.getFullYear() + 1);
 const pastDate = new Date();
 pastDate.setFullYear(pastDate.getFullYear() - 1);
 
-const populateDatabase = async (connection: Connection) => {
-  const usersRepository = connection.getRepository(UsuarioShare);
-  const nonAdminUser = usersRepository.create({
-    email: 'non_admin@example.com',
-    senha: '$2b$10$c9v0imXbhfVuBgLfwaYSLubxb8.gpvr4MfX1ltmEDwIdh.x3ksj.y',
-    nome: 'Non Admin',
-    role: 'Non Admin',
-    cpf: '12345678912',
-    cidade: 'Capela do Alto',
-    estado: 'São Paulo',
-    pais: 'Brasil',
-    nascimento: new Date(),
-    telefone: '15997965485',
-  });
-  await usersRepository.save(nonAdminUser);
-  const adminUser = usersRepository.create({
-    email: 'admin@example.com',
-    senha: '$2b$10$c9v0imXbhfVuBgLfwaYSLubxb8.gpvr4MfX1ltmEDwIdh.x3ksj.y',
-    nome: 'Admin',
-    role: UserRoles.admin,
-    cpf: '12345678912',
-    cidade: 'Capela do Alto',
-    estado: 'São Paulo',
-    pais: 'Brasil',
-    nascimento: new Date(),
-    telefone: '15997965485',
-  });
-  await usersRepository.save(adminUser);
-};
-
-const getToken = async () => {
-  const responseNonAdmin = await request(app)
-    .post('/api/authenticate-share')
-    .send({
-      email: 'non_admin@example.com',
-      password: 'correct_password',
-    });
-  const responseAdmin = await request(app)
-    .post('/api/authenticate-share')
-    .send({
-      email: 'admin@example.com',
-      password: 'correct_password',
-    });
-
-  nonAdminToken = responseNonAdmin.body.token;
-  adminToken = responseAdmin.body.token;
-};
-
 describe('Create Selection Process tests', () => {
   beforeAll(async () => {
     if (!connection) {
@@ -68,8 +24,10 @@ describe('Create Selection Process tests', () => {
     await connection.dropDatabase();
     await connection.runMigrations();
 
-    await populateDatabase(connection);
-    await getToken();
+    await createAdmin(connection);
+    await createNonAdmin(connection);
+    adminToken = await genTokenAdmin();
+    nonAdminToken = await genTokenNonAdmin();
   });
 
   it('Should be possible to create a selection process.', async () => {

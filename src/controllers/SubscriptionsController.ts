@@ -255,6 +255,24 @@ class SubscriptionsController {
       message: 'Successful unsubscription.',
     });
   }
+
+  async showSubscribe(
+    request: Request,
+    response: Response,
+    _next: NextFunction
+  ) {
+    const { id } = request.params;
+
+    const subscribeRepository = getRepository(Inscricao);
+    const subscribe = await subscribeRepository.findOne(id, {
+      relations: ['provasInscricoes', 'participante', 'avaliacoes'],
+    });
+    if (!subscribe) {
+      return _next(new AppError('Subscribe not found.', 404));
+    }
+
+    return response.status(200).json({ subscribe });
+  }
 }
 
 export default SubscriptionsController;

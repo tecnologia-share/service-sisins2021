@@ -1,41 +1,10 @@
 import request from 'supertest';
-import app from '../app';
+import app from '../../app';
 import { Connection, createConnection } from 'typeorm';
-import { UsuarioShare } from '../models/UsuarioShare';
-import { UserRoles } from '../typings/UserRoles';
+import { createAdmin, createNonAdmin } from '../../utils/tests';
 
 let adminToken: string;
 let connection: Connection;
-
-const createUsers = async (connection: Connection) => {
-  const usersRepository = connection.getRepository(UsuarioShare);
-  const nonAdminUser = usersRepository.create({
-    email: 'non_admin@example.com',
-    senha: '$2b$10$c9v0imXbhfVuBgLfwaYSLubxb8.gpvr4MfX1ltmEDwIdh.x3ksj.y',
-    nome: 'Non Admin',
-    role: 'Non Admin',
-    cpf: '12345678912',
-    cidade: 'Capela do Alto',
-    estado: 'São Paulo',
-    pais: 'Brasil',
-    nascimento: new Date(),
-    telefone: '15997965485',
-  });
-  await usersRepository.save(nonAdminUser);
-  const adminUser = usersRepository.create({
-    email: 'admin@example.com',
-    senha: '$2b$10$c9v0imXbhfVuBgLfwaYSLubxb8.gpvr4MfX1ltmEDwIdh.x3ksj.y',
-    nome: 'Admin',
-    role: UserRoles.admin,
-    cpf: '12345678912',
-    cidade: 'Capela do Alto',
-    estado: 'São Paulo',
-    pais: 'Brasil',
-    nascimento: new Date(),
-    telefone: '15997965485',
-  });
-  await usersRepository.save(adminUser);
-};
 
 const getToken = async () => {
   const responseAdmin = await request(app)
@@ -115,7 +84,8 @@ describe('Show Courses tests', () => {
     await connection.dropDatabase();
     await connection.runMigrations();
 
-    await createUsers(connection);
+    await createAdmin(connection);
+    await createNonAdmin(connection);
     await getToken();
     await createSelectionProcess();
   });

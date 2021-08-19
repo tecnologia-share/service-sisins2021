@@ -1,11 +1,11 @@
 import request from 'supertest';
-import app from '../app';
+import app from '../../app';
 import { Connection, createConnection } from 'typeorm';
-import { Participante } from '../models/Participante';
-import { Curso } from '../models/Curso';
-import { ProcessoSeletivo } from '../models/ProcessoSeletivo';
-import { Prova } from '../models/Prova';
-import { Questao } from '../models/Questao';
+import { Participante } from '../../models/Participante';
+import { Curso } from '../../models/Curso';
+import { ProcessoSeletivo } from '../../models/ProcessoSeletivo';
+import { Prova } from '../../models/Prova';
+import { Questao } from '../../models/Questao';
 
 let token: string;
 let connection: Connection;

@@ -6,7 +6,6 @@ import { Curso } from '../models/Curso';
 import { ProcessoSeletivo } from '../models/ProcessoSeletivo';
 import { UsuarioShare } from '../models/UsuarioShare';
 import { CourseStates } from '../typings/CourseStates';
-import { UserRoles } from '../typings/UserRoles';
 
 class CoursesController {
   async create(request: Request, response: Response, _next: NextFunction) {
@@ -217,6 +216,7 @@ class CoursesController {
           time: course.horario,
           professor: course.professor,
           hasExam: course.provas.length > 0,
+          numberOfQuestions: course.provas.length,
           selectionProcessId: course.processo_seletivo_id,
           created_at: course.created_at,
         };
@@ -288,6 +288,24 @@ class CoursesController {
     return response.status(200).json({
       message: 'Course successfully deleted.',
     });
+  }
+
+  async showCourseSubscribes(
+    request: Request,
+    response: Response,
+    _next: NextFunction
+  ) {
+    const { id } = request.params;
+
+    const coursesRepository = getRepository(Curso);
+    const course = await coursesRepository.findOne(id, {
+      relations: ['inscricoes'],
+    });
+    if (!course) return _next(new AppError('Course not found.', 404));
+
+    const subscribes = course.inscricoes;
+
+    return response.status(200).json({ subscribes });
   }
 }
 

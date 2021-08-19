@@ -1,16 +1,16 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import request from 'supertest';
-import app from '../app';
+import app from '../../app';
 import { Connection, createConnection } from 'typeorm';
-import { Participante } from '../models/Participante';
-import { Pergunta } from '../models/Pergunta';
-import { AsksTypes } from '../typings/AsksTypes';
+import { Participante } from '../../models/Participante';
+import { Pergunta } from '../../models/Pergunta';
+import { AsksTypes } from '../../typings/AsksTypes';
 import jwt from 'jsonwebtoken';
 import { Server } from 'http';
 
 const mockSendEmail = jest.fn();
 
-jest.mock('../services/SendMailService.ts', () => ({
+jest.mock('../../services/SendMailService.ts', () => ({
   execute: () => mockSendEmail(),
 }));
 
