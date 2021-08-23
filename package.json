@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "nodemon --files src/server.ts",
     "start": "node dist/src/server.js",
-    "build": "tsc",
+    "copy:views": "cp -r './src/views' 'dist/src/views'",
+    "build": "rm -rf dist && tsc && yarn copy:views",
     "typeorm": "node --require ts-node/register ./node_modules/typeorm/cli.js",
     "test": "jest -i",
     "test:watch": "jest -i --watch --passWithNoTests --silent --noStackTrace",

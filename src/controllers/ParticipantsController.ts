@@ -63,7 +63,7 @@ class ParticipantsController {
         .of(
           yup.object().shape({
             asksId: yup.string().required(),
-            response: yup.number().required(),
+            response: yup.mixed().required(),
           })
         )
         .optional(),

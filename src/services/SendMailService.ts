@@ -35,7 +35,7 @@ class SendMailService {
       to,
       subject,
       html,
-      from: 'email@mail.com',
+      from: process.env.EMAIL,
     });
   }
 }
