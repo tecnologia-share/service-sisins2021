@@ -1,11 +1,11 @@
 import { NextFunction, Request, Response } from 'express';
 import { getRepository } from 'typeorm';
 import * as yup from 'yup';
-import { Curso } from '../../shared/infra/typeorm/models/Curso';
-import { ProcessoSeletivo } from '../../shared/infra/typeorm/models/ProcessoSeletivo';
-import { UsuarioShare } from '../../shared/infra/typeorm/models/UsuarioShare';
-import { CourseStates } from '../../shared/typings/CourseStates';
-import { AppError } from '../../shared/errors/AppError';
+import { Curso } from '@/shared/infra/typeorm/models/Curso';
+import { ProcessoSeletivo } from '@/shared/infra/typeorm/models/ProcessoSeletivo';
+import { UsuarioShare } from '@/shared/infra/typeorm/models/UsuarioShare';
+import { CourseStates } from '@/shared/typings/CourseStates';
+import { AppError } from '@/shared/errors/AppError';
 
 class CoursesController {
   async create(request: Request, response: Response, _next: NextFunction) {

@@ -1,11 +1,11 @@
 import { NextFunction, Request, Response } from 'express';
 import { getRepository } from 'typeorm';
 import * as yup from 'yup';
-import { AppError } from '../../shared/errors/AppError';
-import { UsuarioShare } from '../../shared/infra/typeorm/models/UsuarioShare';
-import { Prova } from '../../shared/infra/typeorm/models/Prova';
-import { Curso } from '../../shared/infra/typeorm/models/Curso';
-import { Questao } from '../../shared/infra/typeorm/models/Questao';
+import { AppError } from '@/shared/errors/AppError';
+import { UsuarioShare } from '@/shared/infra/typeorm/models/UsuarioShare';
+import { Prova } from '@/shared/infra/typeorm/models/Prova';
+import { Curso } from '@/shared/infra/typeorm/models/Curso';
+import { Questao } from '@/shared/infra/typeorm/models/Questao';
 
 interface Question {
   id?: string;

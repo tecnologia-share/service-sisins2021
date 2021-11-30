@@ -1,12 +1,12 @@
-import { container } from 'tsyringe';
 import {
-  CoursesRepository,
   ParticipantsRepository,
-} from '../../modules/subscriptions/repositories';
+  CoursesRepository,
+} from '@/modules/subscriptions/contracts/repos';
 import {
   DbCoursesRepository,
   DbParticipantRepository,
 } from '../infra/typeorm/repositories';
+import { container } from 'tsyringe';
 
 export { container };
 

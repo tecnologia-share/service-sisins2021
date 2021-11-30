@@ -1,5 +1,5 @@
 import { getRepository, Repository } from 'typeorm';
-import { CoursesRepository } from '../../../../modules/subscriptions/repositories/coursesRepository';
+import { CoursesRepository } from '../../../../modules/subscriptions/contracts/repos/coursesRepository';
 import { Curso } from '../models/Curso';
 
 export class DbCoursesRepository implements CoursesRepository {

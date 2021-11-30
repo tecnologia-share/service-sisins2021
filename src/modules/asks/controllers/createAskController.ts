@@ -1,15 +1,15 @@
+import { AsksDTO } from '@/modules/asks/dto/asksDTO';
+import { AppError } from '@/shared/errors/AppError';
+import { Pergunta } from '@/shared/infra/typeorm/models/Pergunta';
+import { AsksTypes } from '@/shared/typings/AsksTypes';
+
 import { NextFunction, Request, Response } from 'express';
 import { getRepository } from 'typeorm';
 import * as yup from 'yup';
-import { AppError } from '../../../shared/errors/AppError';
-import { Pergunta } from '../../../shared/infra/typeorm/models/Pergunta';
-import { AsksDTO } from './dto/asksDTO';
-import { AsksTypes } from '../../../shared/typings/AsksTypes';
 
-class AsksController {
-  async create(request: Request, response: Response, _next: NextFunction) {
+class CreateAskController {
+  async handle(request: Request, response: Response, _next: NextFunction) {
     const { type, ask, alternatives }: AsksDTO = request.body;
-
     const schema = yup.object().shape({
       type: yup.string().required(),
       ask: yup.string().required(),
@@ -47,7 +47,7 @@ class AsksController {
       if (!typeExist) return _next(new AppError('Invalid type'));
     }
 
-    const askRepository = await getRepository(Pergunta);
+    const askRepository = getRepository(Pergunta);
     const question = askRepository.create({
       pergunta: ask,
       tipo: type,
@@ -76,35 +76,6 @@ class AsksController {
       .status(201)
       .json({ message: 'Question successfully created', questionCreated });
   }
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  async show(request: Request, response: Response, _next: NextFunction) {
-    const asksRepository = getRepository(Pergunta);
-    const asks = await asksRepository.find();
-
-    const asksFormat = asks.map((item): AsksDTO => {
-      const obj: AsksDTO = {
-        id: item.id,
-        ask: item.pergunta,
-        type: item.tipo,
-        alternatives: {
-          one: item.alternativa1,
-          two: item.alternativa2,
-          tree: item.alternativa3,
-          four: item.alternativa4,
-          five: item.alternativa5,
-        },
-      };
-      const checkAlternativesIsNull = Object.values({
-        ...obj.alternatives,
-      }).every((i) => i === null);
-
-      if (checkAlternativesIsNull) delete obj.alternatives;
-      return obj;
-    });
-
-    return response.status(200).json({ asks: asksFormat });
-  }
 }
 
-export default AsksController;
+export default CreateAskController;

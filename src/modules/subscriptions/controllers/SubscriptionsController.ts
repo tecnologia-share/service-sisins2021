@@ -1,7 +1,3 @@
-import { NextFunction, Request, Response } from 'express';
-import { getRepository } from 'typeorm';
-import * as yup from 'yup';
-
 import { AppError } from '@/shared/errors/AppError';
 import { Participante } from '@/shared/infra/typeorm/models/Participante';
 import { Curso } from '@/shared/infra/typeorm/models/Curso';
@@ -9,6 +5,10 @@ import { Inscricao } from '@/shared/infra/typeorm/models/Inscricao';
 import { SubscriptionStatus } from '@/shared/typings/SubscriptionStatus';
 import { container } from '@/shared/container';
 import { SubscribeParticipantService } from '@/modules/subscriptions/services/subscribeParticipantService';
+
+import { NextFunction, Request, Response } from 'express';
+import { getRepository } from 'typeorm';
+import * as yup from 'yup';
 
 class SubscriptionsController {
   async subscribe(request: Request, response: Response, _next: NextFunction) {

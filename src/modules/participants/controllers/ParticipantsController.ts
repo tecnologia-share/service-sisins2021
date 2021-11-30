@@ -1,15 +1,16 @@
+import { AppError } from '@/shared/errors/AppError';
+import { Participante } from '@/shared/infra/typeorm/models/Participante';
+import SendMailService from '@/shared/providers/SendMailProvider';
+import { Pergunta } from '@/shared/infra/typeorm/models/Pergunta';
+import { PerguntaParticipante } from '@/shared/infra/typeorm/models/PerguntaParticipante';
+import { env } from '@/config/env';
+
 import { NextFunction, Request, Response } from 'express';
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
+import { resolve } from 'path';
 import { getRepository } from 'typeorm';
 import * as yup from 'yup';
-import { AppError } from '../../shared/errors/AppError';
-import { Participante } from '../../shared/infra/typeorm/models/Participante';
-import bcrypt from 'bcrypt';
-import SendMailService from '../../shared/providers/SendMailProvider';
-import { resolve } from 'path';
-import jwt from 'jsonwebtoken';
-import { Pergunta } from '../../shared/infra/typeorm/models/Pergunta';
-import { PerguntaParticipante } from '../../shared/infra/typeorm/models/PerguntaParticipante';
-import { env } from '../../config/env';
 
 interface PayloadEmail {
   id: string;

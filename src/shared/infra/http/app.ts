@@ -3,7 +3,7 @@ import express from 'express';
 import 'express-async-errors';
 import cors from 'cors';
 
-import routes from './routes';
+import { setupRoutes } from '@/shared/infra/http/config/routes';
 import { appError } from './middlewares/appError';
 import { createConnection } from './middlewares/createConnection';
 
@@ -13,7 +13,7 @@ app.use(express.json());
 app.use(cors());
 
 app.use(createConnection());
-app.use(routes);
+setupRoutes(app);
 app.use(appError());
 
 export default app;

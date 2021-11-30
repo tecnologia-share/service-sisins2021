@@ -1,12 +1,12 @@
 import { NextFunction, Request, Response } from 'express';
 import { getRepository } from 'typeorm';
 import * as yup from 'yup';
-import { AppError } from '../../shared/errors/AppError';
-import { Participante } from '../../shared/infra/typeorm/models/Participante';
+import { AppError } from '@/shared/errors/AppError';
+import { Participante } from '@/shared/infra/typeorm/models/Participante';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import { UsuarioShare } from '../../shared/infra/typeorm/models/UsuarioShare';
-import { env } from '../../config/env';
+import { UsuarioShare } from '@/shared/infra/typeorm/models/UsuarioShare';
+import { env } from '@/config/env';
 
 class AuthController {
   async authenticate(
