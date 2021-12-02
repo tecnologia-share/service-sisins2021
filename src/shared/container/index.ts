@@ -7,6 +7,8 @@ import {
   DbParticipantRepository,
 } from '../infra/typeorm/repositories';
 import { container } from 'tsyringe';
+import { ParticipantAuth } from '@/modules/participants/contracts/usecases';
+import { ParticipantAuthService } from '@/modules/participants/services';
 
 export { container };
 
@@ -18,4 +20,9 @@ container.registerSingleton<ParticipantsRepository>(
 container.registerSingleton<CoursesRepository>(
   'CoursesRepository',
   DbCoursesRepository
+);
+
+container.registerSingleton<ParticipantAuth>(
+  'ParticipantAuth',
+  ParticipantAuthService
 );
