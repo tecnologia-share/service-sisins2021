@@ -30,8 +30,11 @@ class ParticipantsLoginController {
       } catch (error) {
         return _next(new AppError('Email and password are required.'));
       }
-      const { token } = await this.authService.auth({ email, password });
-      return response.status(200).json({ token });
+      const { token, refresh_token, user } = await this.authService.auth({
+        email,
+        password,
+      });
+      return response.status(200).json({ token, refresh_token, user });
     } catch (error) {
       return _next(error);
     }

@@ -3,7 +3,7 @@ import { Participante } from '@/shared/infra/typeorm/models/Participante';
 import SendMailService from '@/shared/providers/SendMailProvider';
 import { Pergunta } from '@/shared/infra/typeorm/models/Pergunta';
 import { PerguntaParticipante } from '@/shared/infra/typeorm/models/PerguntaParticipante';
-import { env } from '@/config/env';
+import { auth, env } from '@/config/env';
 
 import { NextFunction, Request, Response } from 'express';
 import bcrypt from 'bcrypt';
@@ -137,7 +137,7 @@ class ParticipantsController {
         email,
         id: participant.id,
       },
-      env.jwtSecret as string,
+      auth.jwtSecret as string,
       { expiresIn: '5h' }
     );
 
@@ -163,7 +163,7 @@ class ParticipantsController {
   async verifyEmail(request: Request, response: Response, _next: NextFunction) {
     const { token } = request.params;
 
-    jwt.verify(token, env.jwtSecret as string, async (err, decoded) => {
+    jwt.verify(token, auth.jwtSecret as string, async (err, decoded) => {
       if (err) {
         return _next(new AppError('Invalid token!', 401));
       }

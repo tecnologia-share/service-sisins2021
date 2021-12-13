@@ -1,17 +1,26 @@
-import { env } from '@/config/env';
+import { auth } from '@/config/env';
 import { ParticipantAuth } from '@/modules/participants/contracts/usecases';
 import { AppError } from '@/shared/errors/AppError';
 import { Participante } from '@/shared/infra/typeorm/models/Participante';
-
+import dayjs from 'dayjs';
 import { getRepository } from 'typeorm';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import { ParticipantsToken } from '@/shared/infra/typeorm/models/ParticipantsToken';
 
 export class ParticipantAuthService implements ParticipantAuth {
   async auth({
     email,
     password,
   }: ParticipantAuth.Input): Promise<ParticipantAuth.Output> {
+    const {
+      jwtSecret,
+      expiresInToken,
+      secretRefreshToken,
+      expiresInRefreshToken,
+      expiresRefreshTokenDays,
+    } = auth;
+
     const participantesRepository = getRepository(Participante);
 
     const participante = await participantesRepository.findOne({
@@ -21,7 +30,6 @@ export class ParticipantAuthService implements ParticipantAuth {
     if (!participante) {
       throw new AppError('Invalid email or password.', 401);
     }
-
     const passwordIsCorrect = await bcrypt.compare(
       password,
       participante.senha
@@ -34,10 +42,41 @@ export class ParticipantAuthService implements ParticipantAuth {
       {
         id: participante.id,
       },
-      env.jwtSecret as string,
-      { expiresIn: '24h' }
+      jwtSecret as string,
+      { expiresIn: expiresInToken }
     );
 
-    return { token };
+    const refresh_token = jwt.sign(
+      { email: participante.email },
+      secretRefreshToken as string,
+      {
+        expiresIn: expiresInRefreshToken,
+        subject: participante.id,
+      }
+    );
+
+    const expires_date = this.addDays(expiresRefreshTokenDays);
+
+    const participantsTokenRepo = getRepository(ParticipantsToken);
+    await participantsTokenRepo.save(
+      participantsTokenRepo.create({
+        participants_id: participante.id,
+        refresh_token,
+        expires_date,
+      })
+    );
+
+    return {
+      token,
+      refresh_token,
+      user: {
+        email,
+        name: participante.nome,
+      },
+    };
+  }
+
+  private addDays(days: number): Date {
+    return dayjs().add(days, 'days').toDate();
   }
 }

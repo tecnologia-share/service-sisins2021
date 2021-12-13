@@ -5,7 +5,6 @@ export const env = {
   typeormMigrations: process.env.TYPEORM_MIGRATIONS,
   typeormMigrationsDir: process.env.TYPEORM_MIGRATIONS_DIR,
   typeormEntities: process.env.TYPEORM_ENTITIES,
-  jwtSecret: process.env.JWT_SECRET,
   jwtShareSecret: process.env.JWT_SHARE_SECRET,
   smtpUser: process.env.SMTP_USER,
   smtpPassword: process.env.SMTP_PASSWORD,
@@ -15,4 +14,12 @@ export const env = {
   port: process.env.PORT || PORT,
   hostBack: process.env.HOST_BACKEND || `http://localhost:${PORT}`,
   hostFront: process.env.HOST_FRONTEND || 'http://localhost',
+};
+
+export const auth = {
+  jwtSecret: process.env.JWT_SECRET,
+  expiresInToken: '15m',
+  secretRefreshToken: process.env.SECRET_REFRESH_TOKEN,
+  expiresInRefreshToken: '30d',
+  expiresRefreshTokenDays: 30,
 };

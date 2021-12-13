@@ -3,7 +3,7 @@ import request from 'supertest';
 import app from '@/shared/infra/http/app';
 import { Connection, createConnection } from 'typeorm';
 import jwt from 'jsonwebtoken';
-import { env } from '@/config/env';
+import { auth, env } from '@/config/env';
 import { Participante } from '@/shared/infra/typeorm/models/Participante';
 import { Pergunta } from '@/shared/infra/typeorm/models/Pergunta';
 import { AsksTypes } from '@/shared/typings/AsksTypes';
@@ -114,7 +114,6 @@ const getToken = async () => {
     email: 'this_email_exists@example.com',
     password: 'correct_password',
   });
-
   token = response.body.token;
 };
 
@@ -124,7 +123,7 @@ const getToken_emailConfirmed = async () => {
       email: 'this_email_exists@example.com',
       id: participantUnconfirmedEmail_id,
     },
-    env.jwtSecret as string,
+    auth.jwtSecret as string,
     { expiresIn: '5h' }
   );
 };
@@ -134,7 +133,7 @@ const getToken_emailUnconfirmed = async () => {
       email: 'email_unconfirmed@example.com',
       id: participantUnconfirmedEmail_id,
     },
-    env.jwtSecret as string,
+    auth.jwtSecret as string,
     { expiresIn: '5h' }
   );
 };
@@ -144,7 +143,7 @@ const getToken_idNotExist = async () => {
       email: 'emailNotExist@example.com',
       id: participantNotExist_id,
     },
-    env.jwtSecret as string,
+    auth.jwtSecret as string,
     { expiresIn: '5h' }
   );
 };
