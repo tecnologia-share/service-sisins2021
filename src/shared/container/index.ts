@@ -9,6 +9,7 @@ import {
 import { container } from 'tsyringe';
 import { ParticipantAuth } from '@/modules/participants/contracts/usecases';
 import { ParticipantAuthService } from '@/modules/participants/services';
+import { PgParticipantsTokenRepo } from '@/modules/participants/infra/postgres/repositories';
 
 export { container };
 
@@ -26,3 +27,5 @@ container.registerSingleton<ParticipantAuth>(
   'ParticipantAuth',
   ParticipantAuthService
 );
+
+container.registerSingleton('PgParticipantsTokenRepo', PgParticipantsTokenRepo);

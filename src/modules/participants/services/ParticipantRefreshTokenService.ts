@@ -8,16 +8,21 @@ import { ParticipantRefreshToken } from '@/modules/participants/contracts/usecas
 import { AppError } from '@/shared/errors/AppError';
 import dayjs from 'dayjs';
 import { verify, sign } from 'jsonwebtoken';
+import { inject, injectable } from 'tsyringe';
 
 type Payload = {
   email: string;
   sub: string;
 };
 
+@injectable()
 export class ParticipantRefreshTokenService implements ParticipantRefreshToken {
   constructor(
+    @inject('PgParticipantsTokenRepo')
     private readonly findByUserIdAndRefreshToken: FindByUserIdAndRefreshToken,
+    @inject('PgParticipantsTokenRepo')
     private readonly deleteRefreshTokenById: DeleteRefreshTokenById,
+    @inject('PgParticipantsTokenRepo')
     private readonly createRefreshToken: CreateRefreshToken
   ) {}
 
