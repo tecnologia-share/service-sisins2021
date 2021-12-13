@@ -1,4 +1,7 @@
-import { FindByUserIdAndRefreshToken } from '@/modules/participants/contracts/repositories';
+import {
+  DeleteRefreshTokenById,
+  FindByUserIdAndRefreshToken,
+} from '@/modules/participants/contracts/repositories';
 import { ParticipantRefreshTokenService } from '@/modules/participants/services';
 import { AppError } from '@/shared/errors/AppError';
 import { MockProxy, mock } from 'jest-mock-extended';
@@ -13,13 +16,14 @@ type Payload = {
 
 describe('ParticipantsRefreshTokenService', () => {
   let findByUserIdAndRefreshToken: MockProxy<FindByUserIdAndRefreshToken>;
+  let deleteRefreshTokenById: MockProxy<DeleteRefreshTokenById>;
   let jwtMock: jest.Mocked<typeof jwt>;
   let verifyPayload: Payload;
   let sut: ParticipantRefreshTokenService;
 
   beforeAll(() => {
     findByUserIdAndRefreshToken = mock();
-    sut = new ParticipantRefreshTokenService(findByUserIdAndRefreshToken);
+    deleteRefreshTokenById = mock();
     verifyPayload = { email: 'any_email', sub: 'any_user_id' };
     jwtMock = jwt as jest.Mocked<typeof jwt>;
     jwtMock.verify.mockImplementation(() => verifyPayload);
@@ -27,8 +31,12 @@ describe('ParticipantsRefreshTokenService', () => {
 
   beforeEach(async () => {
     findByUserIdAndRefreshToken.find.mockResolvedValue({
-      refreshTokenId: 'valid_refresh_token',
+      refreshTokenId: 'old_refresh_token',
     });
+    sut = new ParticipantRefreshTokenService(
+      findByUserIdAndRefreshToken,
+      deleteRefreshTokenById
+    );
   });
 
   test('should calls FindByUserIdAndRefreshToken with correct input', async () => {
@@ -52,5 +60,12 @@ describe('ParticipantsRefreshTokenService', () => {
     expect(promise).rejects.toBeInstanceOf(
       new AppError('Refresh Token does not exist', 404)
     );
+  });
+
+  test('should calls DeleteRefreshTokenById with correct input', async () => {
+    await sut.refresh({ token: 'any_token' });
+    expect(deleteRefreshTokenById.delete).toHaveBeenCalledWith({
+      refreshTokenId: 'old_refresh_token',
+    });
   });
 });
