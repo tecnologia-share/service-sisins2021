@@ -2,7 +2,7 @@
 import { NextFunction, Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import { AppError } from '../../../errors/AppError';
-import { env } from '../../../../config/env';
+import { auth } from '@/config/env';
 
 interface tokenPayload {
   id: string;
@@ -15,7 +15,7 @@ export const verifyShareJWT = () => {
 
     if (!token) throw new AppError('Invalid token.', 401);
 
-    jwt.verify(token, env.jwtShareSecret as string, (error, decoded) => {
+    jwt.verify(token, auth.jwtShareSecret as string, (error, decoded) => {
       if (error) throw new AppError('Invalid token.', 401);
 
       if (decoded) {

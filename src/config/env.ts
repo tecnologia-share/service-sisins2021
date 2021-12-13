@@ -1,25 +1,22 @@
+import { get } from 'env-var';
+
 const PORT = 3333;
 export const env = {
-  typeormConnection: process.env.TYPEORM_CONNECTION,
-  typeormDatabase: process.env.TYPEORM_DATABASE,
-  typeormMigrations: process.env.TYPEORM_MIGRATIONS,
-  typeormMigrationsDir: process.env.TYPEORM_MIGRATIONS_DIR,
-  typeormEntities: process.env.TYPEORM_ENTITIES,
-  jwtShareSecret: process.env.JWT_SHARE_SECRET,
-  smtpUser: process.env.SMTP_USER,
-  smtpPassword: process.env.SMTP_PASSWORD,
-  smtpPort: process.env.SMTP_PORT,
-  smtpHost: process.env.SMTP_HOST,
-  email: process.env.EMAIL,
-  port: process.env.PORT || PORT,
-  hostBack: process.env.HOST_BACKEND || `http://localhost:${PORT}`,
-  hostFront: process.env.HOST_FRONTEND || 'http://localhost',
+  smtpUser: get('SMTP_USER').required(),
+  smtpPassword: get('SMTP_PASSWORD').required(),
+  smtpPort: get('SMTP_PORT').required(),
+  smtpHost: get('SMTP_HOST').required(),
+  email: get('EMAIL').required(),
+  port: get('PORT').default(PORT),
+  hostBack: get('HOST_BACKEND').default(`http://localhost:${PORT}`),
+  hostFront: get('HOST_FRONTEND').default('http://localhost'),
 };
 
 export const auth = {
-  jwtSecret: process.env.JWT_SECRET,
+  jwtSecret: get('JWT_SECRET').required().asString(),
+  jwtShareSecret: get('JWT_SHARE_SECRET').required().asString(),
   expiresInToken: '15m',
-  secretRefreshToken: process.env.SECRET_REFRESH_TOKEN,
+  secretRefreshToken: get('SECRET_REFRESH_TOKEN').required().asString(),
   expiresInRefreshToken: '30d',
   expiresRefreshTokenDays: 30,
 };

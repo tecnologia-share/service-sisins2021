@@ -5,7 +5,7 @@ import { AppError } from '@/shared/errors/AppError';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { UsuarioShare } from '@/shared/infra/typeorm/models/UsuarioShare';
-import { env } from '@/config/env';
+import { auth } from '@/config/env';
 
 class AuthController {
   async authenticateShare(
@@ -45,7 +45,7 @@ class AuthController {
       {
         id: user.id,
       },
-      env.jwtShareSecret as string,
+      auth.jwtShareSecret as string,
       { expiresIn: '24h' }
     );
 
