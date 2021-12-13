@@ -1,5 +1,6 @@
 import { FindByUserIdAndRefreshToken } from '@/modules/participants/contracts/repositories';
 import { ParticipantRefreshTokenService } from '@/modules/participants/services';
+import { AppError } from '@/shared/errors/AppError';
 import { MockProxy, mock } from 'jest-mock-extended';
 import jwt from 'jsonwebtoken';
 
@@ -24,6 +25,12 @@ describe('ParticipantsRefreshTokenService', () => {
     jwtMock.verify.mockImplementation(() => verifyPayload);
   });
 
+  beforeEach(async () => {
+    findByUserIdAndRefreshToken.find.mockResolvedValue({
+      refreshTokenId: 'valid_refresh_token',
+    });
+  });
+
   test('should calls FindByUserIdAndRefreshToken with correct input', async () => {
     await sut.refresh({ token: 'any_token' });
     expect(findByUserIdAndRefreshToken.find).toHaveBeenCalledWith({
@@ -37,5 +44,13 @@ describe('ParticipantsRefreshTokenService', () => {
     findByUserIdAndRefreshToken.find.mockRejectedValueOnce(error);
     const promise = sut.refresh({ token: 'any_token' });
     expect(promise).rejects.toThrow(error);
+  });
+
+  test('should throws if not found refresh token', async () => {
+    findByUserIdAndRefreshToken.find.mockResolvedValueOnce(undefined);
+    const promise = sut.refresh({ token: 'any_token' });
+    expect(promise).rejects.toBeInstanceOf(
+      new AppError('Refresh Token does not exist', 404)
+    );
   });
 });
