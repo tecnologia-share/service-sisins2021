@@ -48,7 +48,7 @@ export class ParticipantAuthService implements ParticipantAuth {
 
     const refresh_token = jwt.sign(
       { email: participante.email },
-      secretRefreshToken as string,
+      secretRefreshToken,
       {
         expiresIn: expiresInRefreshToken,
         subject: participante.id,

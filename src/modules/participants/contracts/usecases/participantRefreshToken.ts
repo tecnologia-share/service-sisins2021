@@ -1,5 +1,7 @@
 export interface ParticipantRefreshToken {
-  refresh: (params: ParticipantRefreshToken.Input) => Promise<ParticipantRefreshToken.Output>;
+  refresh: (
+    params: ParticipantRefreshToken.Input
+  ) => Promise<ParticipantRefreshToken.Output>;
 }
 
 export namespace ParticipantRefreshToken {
@@ -7,6 +9,6 @@ export namespace ParticipantRefreshToken {
     token: string;
   };
   export type Output = {
-    refresh_token: string;
+    refreshToken: string;
   };
 }
