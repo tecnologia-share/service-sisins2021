@@ -31,4 +31,11 @@ describe('ParticipantsRefreshTokenService', () => {
       userId: verifyPayload.sub,
     });
   });
+
+  test('should rethrows if FindByUserIdAndRefreshToken throws', async () => {
+    const error = new Error('infra_error');
+    findByUserIdAndRefreshToken.find.mockRejectedValueOnce(error);
+    const promise = sut.refresh({ token: 'any_token' });
+    expect(promise).rejects.toThrow(error);
+  });
 });
