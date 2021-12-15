@@ -34,6 +34,8 @@ Cria um curso.
 
   `duration: string`
 
+  `selectionProcessId: string`
+
   `predecessorCourseId?: string`
 
 </br>
