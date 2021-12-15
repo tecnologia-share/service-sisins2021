@@ -100,4 +100,11 @@ describe('ParticipantsRefreshTokenService', () => {
       userId: verifyPayload.sub,
     });
   });
+
+  test('should return refresh token on success', async () => {
+    const result = await sut.refresh({ token: 'any_token' });
+    expect(result).toEqual({
+      refreshToken: 'valid_refresh_token',
+    });
+  });
 });
