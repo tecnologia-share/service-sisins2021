@@ -129,7 +129,7 @@ class ParticipantsController {
     // START sending email
     const npsPath = resolve(
       __dirname,
-      '../../shared/assets/emails/verificationEmail.hbs'
+      '../../../shared/assets/emails/verificationEmail.hbs'
     );
 
     const token = jwt.sign(

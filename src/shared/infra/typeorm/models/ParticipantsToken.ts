@@ -1,4 +1,4 @@
-import { Participante } from '@/shared/infra/typeorm/models/Participante';
+import { Participante } from './Participante';
 import {
   Column,
   CreateDateColumn,

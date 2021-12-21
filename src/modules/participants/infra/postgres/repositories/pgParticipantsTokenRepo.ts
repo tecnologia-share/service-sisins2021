@@ -17,9 +17,9 @@ export class PgParticipantsTokenRepo
     userId,
     refreshToken,
   }: CreateRefreshToken.Input): Promise<void> {
-    const { save, create } = getRepository(ParticipantsToken);
-    await save(
-      create({
+    const repo = getRepository(ParticipantsToken);
+    await repo.save(
+      repo.create({
         expires_date: expiresDate,
         participants_id: userId,
         refresh_token: refreshToken,
@@ -30,23 +30,16 @@ export class PgParticipantsTokenRepo
     token,
     userId,
   }: FindByUserIdAndRefreshToken.Input): Promise<FindByUserIdAndRefreshToken.Output> {
-    const { findOne } = getRepository(ParticipantsToken);
-    const exist = await findOne({
+    const repo = getRepository(ParticipantsToken);
+
+    return await repo.findOne({
       participants_id: userId,
       refresh_token: token,
     });
-
-    return exist
-      ? {
-          refreshTokenId: token,
-        }
-      : undefined;
   }
-  async delete({
-    refreshTokenId,
-  }: DeleteRefreshTokenById.Input): Promise<void> {
+  async delete(input: DeleteRefreshTokenById.Input): Promise<void> {
     const repo = getRepository(ParticipantsToken);
 
-    await repo.delete(refreshTokenId);
+    await repo.remove(input);
   }
 }

@@ -1,3 +1,5 @@
+import { ParticipantsToken } from '@/shared/infra/typeorm/models/ParticipantsToken';
+
 export interface FindByUserIdAndRefreshToken {
   find: (
     params: FindByUserIdAndRefreshToken.Input
@@ -9,9 +11,5 @@ export namespace FindByUserIdAndRefreshToken {
     userId: string;
     token: string;
   };
-  export type Output =
-    | {
-        refreshTokenId: string;
-      }
-    | undefined;
+  export type Output = ParticipantsToken | undefined;
 }

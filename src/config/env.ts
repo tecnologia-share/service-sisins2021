@@ -2,14 +2,14 @@ import { get } from 'env-var';
 
 const PORT = 3333;
 export const env = {
-  smtpUser: get('SMTP_USER').required(),
-  smtpPassword: get('SMTP_PASSWORD').required(),
-  smtpPort: get('SMTP_PORT').required(),
-  smtpHost: get('SMTP_HOST').required(),
-  email: get('EMAIL').required(),
-  port: get('PORT').default(PORT),
-  hostBack: get('HOST_BACKEND').default(`http://localhost:${PORT}`),
-  hostFront: get('HOST_FRONTEND').default('http://localhost'),
+  smtpUser: get('SMTP_USER').required().asString(),
+  smtpPassword: get('SMTP_PASSWORD').required().asString(),
+  smtpPort: get('SMTP_PORT').required().asString(),
+  smtpHost: get('SMTP_HOST').required().asString(),
+  email: get('EMAIL').required().asString(),
+  port: get('PORT').default(PORT).asPortNumber(),
+  hostBack: get('HOST_BACKEND').default(`http://localhost:${PORT}`).asString(),
+  hostFront: get('HOST_FRONTEND').default('http://localhost').asString(),
 };
 
 export const auth = {

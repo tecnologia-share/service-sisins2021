@@ -10,6 +10,8 @@ import jwt from 'jsonwebtoken';
 import dayjs from 'dayjs';
 import { mocked } from 'ts-jest/utils';
 import { set, reset } from 'mockdate';
+import { Participante } from '@/shared/infra/typeorm/models/Participante';
+import { ParticipantsToken } from '@/shared/infra/typeorm/models/ParticipantsToken';
 
 jest.mock('jsonwebtoken');
 jest.mock('dayjs');
@@ -28,8 +30,8 @@ describe('ParticipantsRefreshTokenService', () => {
   let toDateSpy: jest.Mock;
   let verifyPayload: Payload;
   let sut: ParticipantRefreshTokenService;
-
-  beforeAll(() => {
+  let fakerParticipant: ParticipantsToken;
+  beforeAll(async () => {
     set(new Date());
     findByUserIdAndRefreshToken = mock();
     deleteRefreshTokenById = mock();
@@ -43,12 +45,18 @@ describe('ParticipantsRefreshTokenService', () => {
     mocked(dayjs).mockImplementation(
       jest.fn().mockImplementation(() => ({ add: addSpy }))
     );
+    fakerParticipant = {
+      id: 'any_id',
+      refresh_token: 'any_refresh_token',
+      participants_id: 'any_participants_id',
+      expires_date: new Date(),
+      created_at: new Date(),
+      participant: {} as Participante,
+    };
   });
 
   beforeEach(async () => {
-    findByUserIdAndRefreshToken.find.mockResolvedValue({
-      refreshTokenId: 'old_refresh_token',
-    });
+    findByUserIdAndRefreshToken.find.mockResolvedValue(fakerParticipant);
     deleteRefreshTokenById.delete.mockResolvedValue();
     createRefreshToken.create.mockResolvedValue();
     sut = new ParticipantRefreshTokenService(
@@ -80,16 +88,16 @@ describe('ParticipantsRefreshTokenService', () => {
   test('should throws if not found refresh token', async () => {
     findByUserIdAndRefreshToken.find.mockResolvedValueOnce(undefined);
     const promise = sut.refresh({ token: 'any_token' });
-    expect(promise).rejects.toBeInstanceOf(
+    await expect(promise).rejects.toEqual(
       new AppError('Refresh Token does not exist', 404)
     );
   });
 
   test('should calls DeleteRefreshTokenById with correct input', async () => {
     await sut.refresh({ token: 'any_token' });
-    expect(deleteRefreshTokenById.delete).toHaveBeenCalledWith({
-      refreshTokenId: 'old_refresh_token',
-    });
+    expect(deleteRefreshTokenById.delete).toHaveBeenCalledWith(
+      fakerParticipant
+    );
   });
 
   test('should calls CreateRefreshToken with correct input', async () => {
