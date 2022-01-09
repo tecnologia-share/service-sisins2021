@@ -10,5 +10,6 @@ export namespace ParticipantRefreshToken {
   };
   export type Output = {
     refreshToken: string;
+    token: string;
   };
 }

@@ -28,10 +28,10 @@ class ParticipantsRefreshTokenController {
       } catch (error) {
         return _next(new AppError('Token is required.'));
       }
-      const { refreshToken } = await this.refreshTokenService.refresh({
+      const result = await this.refreshTokenService.refresh({
         token,
       });
-      return response.status(200).json({ refresh_token: refreshToken });
+      return response.status(200).json(result);
     } catch (error) {
       return _next(error);
     }

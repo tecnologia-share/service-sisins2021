@@ -113,6 +113,7 @@ describe('ParticipantsRefreshTokenService', () => {
     const result = await sut.refresh({ token: 'any_token' });
     expect(result).toEqual({
       refreshToken: 'valid_refresh_token',
+      token: 'valid_refresh_token',
     });
   });
 });

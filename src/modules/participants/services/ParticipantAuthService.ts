@@ -42,7 +42,7 @@ export class ParticipantAuthService implements ParticipantAuth {
       {
         id: participante.id,
       },
-      jwtSecret as string,
+      jwtSecret,
       { expiresIn: expiresInToken }
     );
 

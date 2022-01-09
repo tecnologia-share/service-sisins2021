@@ -56,7 +56,15 @@ export class ParticipantRefreshTokenService implements ParticipantRefreshToken {
       userId,
     });
 
-    return { refreshToken };
+    const newToken = sign(
+      {
+        id: userId,
+      },
+      auth.jwtSecret,
+      { expiresIn: auth.expiresInToken }
+    );
+
+    return { refreshToken, token: newToken };
   }
 
   private addDays(days: number): Date {

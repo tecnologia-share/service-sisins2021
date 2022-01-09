@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { NextFunction, Request, Response } from 'express';
-import jwt from 'jsonwebtoken';
+import jwt, { TokenExpiredError } from 'jsonwebtoken';
 import { AppError } from '../../../errors/AppError';
 import { auth } from '../../../../config/env';
 
@@ -16,7 +16,13 @@ export const verifyJWT = () => {
     if (!token) throw new AppError('Invalid token.', 401);
 
     jwt.verify(token, auth.jwtSecret as string, (error, decoded) => {
-      if (error) throw new AppError('Invalid token.', 401);
+      if (error) {
+        if (error instanceof TokenExpiredError){
+          throw new AppError('Token Expired', 401);
+        }
+
+        throw new AppError('Invalid token.', 401);
+      }
 
       if (decoded) {
         request.userId = (decoded as tokenPayload).id;
