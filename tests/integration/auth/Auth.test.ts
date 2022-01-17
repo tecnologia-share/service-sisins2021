@@ -12,7 +12,7 @@ describe('Authentication tests', () => {
     await createParticipant(connection);
   });
 
-  it('Should return a token if the email and password sent are correct', async () => {
+  it('Should return a token, refresh_token and user if the email and password sent are correct', async () => {
     const response = await request(app).post('/api/authenticate').send({
       email: 'this_email_exists@example.com',
       password: 'correct_password',
@@ -20,6 +20,8 @@ describe('Authentication tests', () => {
 
     expect(response.status).toBe(200);
     expect(response.body).toHaveProperty('token');
+    expect(response.body).toHaveProperty('refresh_token');
+    expect(response.body).toHaveProperty('user');
   });
 
   it('Should return 401 UNAUTHORIZED if the email does not exist', async () => {
