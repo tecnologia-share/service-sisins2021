@@ -7,7 +7,7 @@ import {
 import { ParticipantRefreshToken } from '@/modules/participants/contracts/usecases';
 import { AppError } from '@/shared/errors/AppError';
 import dayjs from 'dayjs';
-import { verify, sign } from 'jsonwebtoken';
+import { verify, sign, TokenExpiredError } from 'jsonwebtoken';
 import { inject, injectable } from 'tsyringe';
 
 type Payload = {
@@ -29,10 +29,20 @@ export class ParticipantRefreshTokenService implements ParticipantRefreshToken {
   async refresh({
     token,
   }: ParticipantRefreshToken.Input): Promise<ParticipantRefreshToken.Output> {
-    const { sub: userId, email } = verify(
-      token,
-      auth.secretRefreshToken
-    ) as Payload;
+    let userId: string;
+    let email: string;
+
+    try {
+      const decoded = verify(token, auth.secretRefreshToken) as Payload;
+      userId = decoded.sub;
+      email = decoded.email;
+    } catch (error) {
+      if (error instanceof TokenExpiredError) {
+        throw new AppError('Refresh Token Expired', 401);
+      }
+
+      throw new AppError('Refresh Token does not exist', 404);
+    }
 
     const userToken = await this.findByUserIdAndRefreshToken.find({
       userId,
