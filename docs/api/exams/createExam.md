@@ -29,7 +29,7 @@ Cria uma prova.
     questions: Array<{
       title: string,
       question: string,
-      image: string,
+      image?: string,
       alternative1: string,
       alternative2: string,
       alternative3: string,
