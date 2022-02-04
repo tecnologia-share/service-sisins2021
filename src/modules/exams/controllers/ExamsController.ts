@@ -35,7 +35,7 @@ class ExamsController {
         .of(
           yup.object().shape({
             question: yup.string().required(),
-            image: yup.string().required(),
+            image: yup.string().optional(),
             alternative1: yup.string().required(),
             alternative2: yup.string().required(),
             alternative3: yup.string().required(),
@@ -126,7 +126,7 @@ class ExamsController {
           yup.object().shape({
             id: yup.string().optional(),
             question: yup.string().required(),
-            image: yup.string().required(),
+            image: yup.string().optional(),
             alternative1: yup.string().required(),
             alternative2: yup.string().required(),
             alternative3: yup.string().required(),
